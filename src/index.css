@@ -116,7 +116,7 @@ form {
   padding: 1rem;
   background-color: rgb(235, 235, 235);
   font-size: 0.8rem;
-  min-width: 31%;
+  width: 31%;
 }
 
 .feedItem .cardBody {

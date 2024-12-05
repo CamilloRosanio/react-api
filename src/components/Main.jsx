@@ -8,6 +8,17 @@ import Posts from '../data/Posts';
 
 function Main() {
 
+    const fetchPosts = () => (
+        fetch('http://localhost:3000/posts?term=')
+            .then(res => res.json())
+            .then((data) => {
+                console.log(data.elements);
+            })
+            .catch((error) => {
+                console.log('error catched')
+            })
+    )
+
     // Invece di tanti USE-STATE per ciascun field, uso un solo USE-STATE del FORM al cui interno specifico le KEYS
     const [formFields, setFormFields] = useState({
         title: '',
@@ -18,7 +29,7 @@ function Main() {
         tags: [],
     })
 
-    const [Feed, setFeed] = useState([]);
+    const [Feed, setFeed] = useState(Posts);
 
 
     const handleFormFieldsChange = (e) => {
@@ -75,6 +86,17 @@ function Main() {
     const deletePost = (deleteIndex) => {
         setFeed(Feed.filter((post, index) => index !== deleteIndex));
     }
+
+
+    // Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
+    // Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed.
+    useEffect(() => {
+        fetchPosts();
+        console.log('FETCH of resources (Posts) executed.')
+    }, [])
+
+
+
 
     return (
         <>

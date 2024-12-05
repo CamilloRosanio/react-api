@@ -1,7 +1,7 @@
 const Posts = [
     {
         id: 1,
-        state: 'published',
+        published: true,
         title: 'Il linguaggio HTML',
         category: '',
         img: '',
@@ -10,7 +10,7 @@ const Posts = [
     },
     {
         id: 4,
-        state: 'published',
+        published: true,
         title: 'Le funzioni di JS',
         category: '',
         img: '',
@@ -19,7 +19,7 @@ const Posts = [
     },
     {
         id: 9,
-        state: 'draft',
+        published: true,
         title: 'La praticità di React',
         category: '',
         img: '',
@@ -28,7 +28,7 @@ const Posts = [
     },
     {
         id: 12,
-        state: 'published',
+        published: true,
         title: 'Approfondimento sui Tag HTML',
         category: '',
         img: '',
@@ -37,7 +37,7 @@ const Posts = [
     },
     {
         id: 23,
-        state: 'published',
+        published: true,
         title: 'Dettagli su JS',
         category: '',
         img: '',
