@@ -79,9 +79,9 @@ function Main() {
         // alert('Creation successful')
     }
 
-    const modifyTitle = (modifyId) => {
+    const modifyTitle = async (modifyId) => {
 
-        console.log('Modify element with ID: ' + modifyId)
+        alert('Modify element with ID: ' + modifyId)
         // Modify "simulata" filtrando l'Array iniziale fornito in Locale
         // const newTitle = prompt('Insert new Title');
         // const updatedFeed = [...Feed];
@@ -89,18 +89,18 @@ function Main() {
         // setFeed(updatedFeed);
 
         // Modifica tramite CRUD ( MODIFY ) come sarebbe se si lavorasse con una vera API
-        fetch('http://localhost:3000/posts/' + modifyId, {
-            method: 'PATCH',
-        })
-            .then(res => res.json())
-            .then((data) => {
-                setFeed(data.elements);
-            })
-            .catch((error) => {
-                console.log('error catched')
-            })
+        // await fetch('http://localhost:3000/posts/' + modifyId, {
+        //     method: 'PATCH',
+        // })
+        //     .then(res => res.json())
+        //     .then((data) => {
+        //         setFeed(data.elements);
+        //     })
+        //     .catch((error) => {
+        //         console.log('error catched')
+        //     })
 
-        console.log(data.elements);
+        // console.log(data.elements);
     }
 
     const deletePost = async (deleteId) => {
@@ -121,7 +121,7 @@ function Main() {
                 console.log('error catched')
             })
 
-        await console.log(data.elements);
+        console.log(data.elements);
     }
 
 
@@ -130,7 +130,7 @@ function Main() {
     useEffect(() => {
         fetchPosts();
         console.log('FETCH of initial resources (Posts) executed.');
-    }, [])
+    }, []);
 
 
 
@@ -144,7 +144,7 @@ function Main() {
                     {/* FORM SECTION */}
                     <section>
 
-                        {/* FORM (CREATE POST) */}
+                        {/* COMPONENT FORM (CREATE POST) */}
                         <FormCreatePost
                             handleSubmit={handleFormSubmit}
                             handleFieldsChange={handleFormFieldsChange}
