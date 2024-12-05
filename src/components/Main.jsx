@@ -8,8 +8,8 @@ import Posts from '../data/Posts';
 
 function Main() {
 
-    const fetchPosts = () => (
-        fetch('http://localhost:3000/posts?term=')
+    const fetchPosts = async () => (
+        await fetch('http://localhost:3000/posts?term=')
             .then(res => res.json())
             .then((data) => {
                 setFeed(data.elements);
@@ -21,6 +21,7 @@ function Main() {
 
     // Invece di tanti USE-STATE per ciascun field, uso un solo USE-STATE del FORM al cui interno specifico le KEYS
     const [formFields, setFormFields] = useState({
+        id: '',
         title: '',
         content: '',
         img: '',
@@ -52,6 +53,7 @@ function Main() {
         e.preventDefault();
         // Assegno i valori delle KEYS del nuovo OBJECT che sto creando
         const newPost = {
+            id: '',
             title: formFields.title,
             content: formFields.content,
             img: formFields.img,
@@ -65,6 +67,7 @@ function Main() {
         setFeed(updatedFeed);
         // Svuoto la casella dell'INPUT assegnando un valore vuoto al Field
         setFormFields({
+            id: '',
             title: '',
             content: '',
             img: '',
@@ -76,15 +79,49 @@ function Main() {
         // alert('Creation successful')
     }
 
-    const modifyTitle = (modifyIndex) => {
-        const newTitle = prompt('Insert new Title');
-        const updatedFeed = [...Feed];
-        updatedFeed[modifyIndex].title = newTitle;
-        setFeed(updatedFeed);
+    const modifyTitle = (modifyId) => {
+
+        console.log('Modify element with ID: ' + modifyId)
+        // Modify "simulata" filtrando l'Array iniziale fornito in Locale
+        // const newTitle = prompt('Insert new Title');
+        // const updatedFeed = [...Feed];
+        // updatedFeed[modifyId].title = newTitle;
+        // setFeed(updatedFeed);
+
+        // Modifica tramite CRUD ( MODIFY ) come sarebbe se si lavorasse con una vera API
+        fetch('http://localhost:3000/posts/' + modifyId, {
+            method: 'PATCH',
+        })
+            .then(res => res.json())
+            .then((data) => {
+                setFeed(data.elements);
+            })
+            .catch((error) => {
+                console.log('error catched')
+            })
+
+        console.log(data.elements);
     }
 
-    const deletePost = (deleteIndex) => {
-        setFeed(Feed.filter((post, index) => index !== deleteIndex));
+    const deletePost = async (deleteId) => {
+
+        alert('ID selezionato: ' + deleteId);
+        // Destroy "simulata" filtrando l'Array iniziale fornito in Locale
+        // setFeed(Feed.filter((post, index) => post.id !== deleteId));
+
+        // Cancellazione tramite CRUD ( DESTROY ) come sarebbe se si lavorasse con una vera API
+        await fetch('http://localhost:3000/posts/' + deleteId, {
+            method: 'DELETE',
+        })
+            .then(res => res.json())
+            .then((data) => {
+                setFeed(data.elements);
+            })
+            .catch((error) => {
+                console.log('error catched')
+            })
+
+        await console.log(data.elements);
     }
 
 
@@ -92,8 +129,9 @@ function Main() {
     // Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed.
     useEffect(() => {
         fetchPosts();
-        console.log('FETCH of resources (Posts) executed.')
+        console.log('FETCH of initial resources (Posts) executed.');
     }, [])
+
 
 
 
@@ -162,6 +200,7 @@ function Main() {
                                     .map((post, index) => (
                                         <li key={index} className='feedItem'>
                                             <div className='cardBody'>
+                                                <p>{'ID ' + post.id + ' - Index: ' + index}</p>
                                                 <p><strong>{post.category}</strong></p>
                                                 <h4>{post.title}</h4>
                                                 <p>{post.content}</p>
@@ -170,8 +209,8 @@ function Main() {
                                             </div>
 
                                             <div className='bottomControls'>
-                                                <button type='button' onClick={() => modifyTitle(index)} className='button gold'>Modify Title</button>
-                                                <button type='button' onClick={() => deletePost(index)} className='button red'>Delete</button>
+                                                <button type='button' onClick={() => modifyTitle(post.id)} className='button gold'>Modify Title</button>
+                                                <button type='button' onClick={() => deletePost(post.id)} className='button red'>Delete</button>
                                             </div>
                                         </li>
                                     )) :

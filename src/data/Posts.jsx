@@ -1,6 +1,6 @@
 const Posts = [
     {
-        id: 1,
+        id: 45,
         published: true,
         title: 'Il linguaggio HTML',
         category: '',
@@ -9,7 +9,7 @@ const Posts = [
         content: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa laudantium aliquam amet facere assumenda reprehenderit.',
     },
     {
-        id: 4,
+        id: 99,
         published: true,
         title: 'Le funzioni di JS',
         category: '',
@@ -18,7 +18,7 @@ const Posts = [
         content: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa laudantium aliquam amet facere assumenda reprehenderit.',
     },
     {
-        id: 9,
+        id: 312,
         published: true,
         title: 'La praticità di React',
         category: '',
@@ -27,7 +27,7 @@ const Posts = [
         content: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa laudantium aliquam amet facere assumenda reprehenderit.',
     },
     {
-        id: 12,
+        id: 68,
         published: true,
         title: 'Approfondimento sui Tag HTML',
         category: '',
@@ -36,7 +36,7 @@ const Posts = [
         content: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa laudantium aliquam amet facere assumenda reprehenderit.',
     },
     {
-        id: 23,
+        id: 37,
         published: true,
         title: 'Dettagli su JS',
         category: '',
