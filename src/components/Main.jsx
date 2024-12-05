@@ -12,7 +12,7 @@ function Main() {
         fetch('http://localhost:3000/posts?term=')
             .then(res => res.json())
             .then((data) => {
-                console.log(data.elements);
+                setFeed(data.elements);
             })
             .catch((error) => {
                 console.log('error catched')
