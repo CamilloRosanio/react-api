@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 const apiUrlRoot = import.meta.env.VITE_APIURL;
 const apiSubPath = import.meta.env.VITE_SUBPATH;
 
-import FormCreatePost from './formCreatePost';
+import FormCreatePost from './FormCreatePost';
 
 
 // UTILITY
@@ -281,10 +281,10 @@ function Main() {
                                         <li key={index} className='feedItem'>
                                             <div className='cardBody'>
                                                 <p>{'ID ' + post.id + ' - Index: ' + index}</p>
-                                                <p><strong>{post.category}</strong></p>
-                                                <h4>{post.title}</h4>
-                                                <p>{post.content}</p>
-                                                <p>{post.tags}</p>
+                                                <p><strong>Category: {post.category}</strong></p>
+                                                <h4>Title: {post.title}</h4>
+                                                <p>Content: {post.content}</p>
+                                                <p>Tags: {post.tags}</p>
                                                 {/* <p>{post.published ? 'published' : 'draft'}</p> */}
                                             </div>
 
