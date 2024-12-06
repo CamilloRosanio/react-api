@@ -5,19 +5,29 @@ import FormCreatePost from './formCreatePost';
 
 import Posts from '../data/Posts';
 
+const apiUrlRoot = 'http://localhost:3000/';
+
 
 function Main() {
 
     const fetchPosts = async () => (
-        await fetch('http://localhost:3000/posts?term=')
+        await fetch(apiUrlRoot + '/posts?term=')
             .then(res => res.json())
             .then((data) => {
                 setFeed(data.elements);
             })
             .catch((error) => {
-                console.log('error catched')
+                console.error('Error while fetching content')
             })
     )
+
+    // Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
+    // Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed.
+    useEffect(() => {
+        fetchPosts();
+        console.log('FETCH of initial resources (Posts) executed.');
+    }, []);
+
 
     // Invece di tanti USE-STATE per ciascun field, uso un solo USE-STATE del FORM al cui interno specifico le KEYS
     const [formFields, setFormFields] = useState({
@@ -89,7 +99,7 @@ function Main() {
         // setFeed(updatedFeed);
 
         // Modifica tramite CRUD ( MODIFY ) come sarebbe se si lavorasse con una vera API
-        // await fetch('http://localhost:3000/posts/' + modifyId, {
+        // await fetch(apiUrlRoot + 'posts/' + modifyId, {
         //     method: 'PATCH',
         // })
         //     .then(res => res.json())
@@ -109,30 +119,28 @@ function Main() {
         // Destroy "simulata" filtrando l'Array iniziale fornito in Locale
         // setFeed(Feed.filter((post, index) => post.id !== deleteId));
 
+        let updatedFeed;
+
         // Cancellazione tramite CRUD ( DESTROY ) come sarebbe se si lavorasse con una vera API
-        await fetch('http://localhost:3000/posts/' + deleteId, {
-            method: 'DELETE',
-        })
-            .then(res => res.json())
-            .then((data) => {
-                setFeed(data.elements);
+        const fetchPostsAfterDelete = async () => {
+            await fetch(apiUrlRoot + 'posts/' + deleteId, {
+                method: 'DELETE',
             })
-            .catch((error) => {
-                console.log('error catched')
-            })
+                .then(res => res.json())
+                .then((data) => {
+                    updatedFeed = data.elements;
+                })
+                .catch((error) => {
+                    console.log('error catched')
+                })
+        }
 
-        console.log(data.elements);
+        await fetchPostsAfterDelete();
+
+        await setFeed(updatedFeed);
+
+        console.log(updatedFeed);
     }
-
-
-    // Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
-    // Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed.
-    useEffect(() => {
-        fetchPosts();
-        console.log('FETCH of initial resources (Posts) executed.');
-    }, []);
-
-
 
 
 
