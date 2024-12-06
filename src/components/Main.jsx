@@ -5,7 +5,9 @@ import { useEffect } from 'react';
 const apiUrlRoot = import.meta.env.VITE_APIURL;
 const apiSubPath = import.meta.env.VITE_SUBPATH;
 
+// IMPORT COMPONENTS
 import FormCreatePost from './FormCreatePost';
+import DeleteModal from './DeleteModal';
 
 
 // UTILITY
@@ -69,15 +71,15 @@ function Main() {
     )
 
     // # CRUD - MODIFY
-    const crudModify = async (modifyId) => {
-        await fetch(apiUrlRoot + apiSubPath + modifyId, {
+    const crudModify = async (item) => {
+        await fetch(apiUrlRoot + apiSubPath + item.id, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formFields),
+            body: JSON.stringify(item),
         })
             .then(res => res.json())
             .then((data) => {
-                console.log('MODIFY of item executed. (Item with ID: ' + modifyId + ')');
+                console.log('MODIFY of item executed. (Item with ID: ' + item.id + ')');
                 crudIndex();
                 console.log('CRUD executed: Modify');
             })
@@ -123,6 +125,8 @@ function Main() {
             // Modifico solo la KEY con il nome dell'INPUT, che deve coincidere con quello delle KEYS del FORM assegnate nello USE-STATE dinamico
             [e.target.name]: receivedValue,
         });
+
+        // console.log(formFields);
     }
 
     // # HANDLER - FORM SUBMIT - INSERT
@@ -167,15 +171,14 @@ function Main() {
 
 
     // # ON-CLICK - MODIFY ITEM (title)
-    const modifyTitle = (modifyId) => {
+    const modifyTitle = async (modifyId) => {
 
-        const newTitle = prompt('Insert new Title');
+        const newTitle = await prompt('Insert new Title');
         console.log('New "title" property: "' + newTitle + '"');
 
-        let selectedItem = { ...Feed.find(item => item.id === modifyId), title: newTitle };
+        const selectedItem = { ...Feed.find(item => item.id === modifyId), title: newTitle };
         console.log('Selected Item has ID:' + modifyId);
-
-        setFormFields(selectedItem);
+        console.log(selectedItem);
 
         // Metodo senza API
         // Modify "simulata" filtrando l'Array iniziale fornito in Locale
@@ -184,18 +187,7 @@ function Main() {
         // setFeed(updatedFeed);
 
         // CRUD ( MODIFY ) con API
-        crudModify(modifyId);
-
-        // RESET USE-STATE
-        setFormFields({
-            id: '',
-            title: '',
-            content: '',
-            img: '',
-            category: '',
-            published: false,
-            tags: [],
-        })
+        await crudModify(selectedItem);
     }
 
 
@@ -212,12 +204,31 @@ function Main() {
     }
 
 
+    // DELETE MODAL UTILITY
+    const [visible, setVisible] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
 
+    const openDeleteModal = async (itemId) => {
+        const newDeleteId = itemId;
+        await setDeleteId(newDeleteId);
+
+        const isVisible = !visible;
+        setVisible(isVisible);
+
+    }
 
 
 
     return (
         <>
+            {visible ?
+                <DeleteModal
+                    id={deleteId}
+                    onClick={deletePost}
+                    closeModal={openDeleteModal}
+                /> : ''
+            }
+
             <main>
                 <div className="container">
 
@@ -278,7 +289,7 @@ function Main() {
                                 Feed
                                     .filter(post => post.published === true)
                                     .map((post, index) => (
-                                        <li key={index} className='feedItem'>
+                                        <li key={post.id} className='feedItem'>
                                             <div className='cardBody'>
                                                 <p>{'ID ' + post.id + ' - Index: ' + index}</p>
                                                 <p><strong>Category: {post.category}</strong></p>
@@ -290,11 +301,13 @@ function Main() {
 
                                             <div className='bottomControls'>
                                                 <button type='button' onClick={() => modifyTitle(post.id)} className='button gold'>Modify Title</button>
-                                                <button type='button' onClick={() => deletePost(post.id)} className='button red'>Delete</button>
+
+                                                {/* MODAL - DELETE ITEM */}
+                                                <button type='button' cursor='pointer' onClick={() => openDeleteModal(post.id)} className='button red'>Delete</button>
                                             </div>
                                         </li>
                                     )) :
-                                <h3 className='feedItem'>No posts available</h3>
+                                <h3 className='feedItem'>No posts available.</h3>
                             }
                         </ul>
                     </section>
