@@ -193,9 +193,6 @@ function Main() {
 
     // # ON-CLICK - DELETE ITEM
     const deletePost = (deleteId) => {
-
-        alert('ID selezionato: ' + deleteId);
-
         // Destroy "simulata" filtrando l'Array iniziale fornito in Locale
         // setFeed(Feed.filter((post, index) => post.id !== deleteId));
 
