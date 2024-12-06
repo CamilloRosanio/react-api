@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
+// # .env IMPORTS
+const apiUrlRoot = import.meta.env.VITE_APIURL;
+
 import FormCreatePost from './formCreatePost';
 
 import Posts from '../data/Posts';
 
-const apiUrlRoot = 'http://localhost:3000/';
+
 
 
 function Main() {
 
+    // # CRUD - INDEX
     const fetchPosts = () => (
         fetch(apiUrlRoot + 'posts?term=', {
             method: 'GET',
@@ -24,21 +28,18 @@ function Main() {
     )
 
 
-    // INDEX CRUD AT INIT
+    // # FETCH USE-EFFECT (AT INIT)
     /* Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
     Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed. */
     useEffect(() => {
         fetchPosts();
     }, []);
 
-    useEffect(() => {
-        console.log('FETCHED resources: (' + Feed.length + ')');
-    }, [fetchPosts]);
 
     // INIT USE-STATE SETTING
     const [Feed, setFeed] = useState([]);
 
-
+    // # USE-STATE - FORM (INSERT)
     // Invece di tanti USE-STATE per ciascun field, uso un solo USE-STATE del FORM al cui interno specifico le KEYS
     const [formFields, setFormFields] = useState({
         id: '',
@@ -51,7 +52,7 @@ function Main() {
     })
 
 
-    // # HANDLE FORM FIELDS CHANGE
+    // # HANDLER - FORM FIELDS CHANGE
     const handleFormFieldsChange = (e) => {
         // Se il valore è TEXT o CHECKBOX rendo due risultati diversi tramite TERNARY-OPERATOR
         const receivedValue = (e.target.type === 'checkbox' ? e.target.checked : e.target.value);
@@ -63,13 +64,12 @@ function Main() {
             // Modifico solo la KEY con il nome dell'INPUT, che deve coincidere con quello delle KEYS del FORM assegnate nello USE-STATE dinamico
             [e.target.name]: receivedValue,
         });
-
-        console.log(e.target.checked)
     }
 
 
-    // # HANDLE FORM SUBMIT
-    const handleFormSubmit = (e) => {
+
+    // # HANDLER - FORM SUBMIT
+    const handleFormSubmit = async (e) => {
         // Evito che il Submit ricarichi la pagina tramite "e" (EVENT), che è un OBJECT automaticamente fornito contenente tutte le info dell'evento lanciato
         e.preventDefault();
         // Assegno i valori delle KEYS del nuovo OBJECT che sto creando
@@ -97,8 +97,9 @@ function Main() {
             tags: [],
         })
 
-        // alert('Creation successful')
+        alert('Creation successful');
     }
+
 
 
     // # CRUD - MODIFY
