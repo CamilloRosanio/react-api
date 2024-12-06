@@ -10,23 +10,33 @@ const apiUrlRoot = 'http://localhost:3000/';
 
 function Main() {
 
-    const fetchPosts = async () => (
-        await fetch(apiUrlRoot + '/posts?term=')
+    const fetchPosts = () => (
+        fetch(apiUrlRoot + 'posts?term=', {
+            method: 'GET',
+        })
             .then(res => res.json())
             .then((data) => {
                 setFeed(data.elements);
             })
             .catch((error) => {
-                console.error('Error while fetching content')
+                console.log('Error while fetching content')
             })
     )
 
-    // Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
-    // Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed.
+
+    // INDEX CRUD AT INIT
+    /* Questo USE-EFFECT non avendo alcuna DEPENDENCY (Array vuoto che triggera l'eseguzione del codice) sarà eseguito solo all'AVVIO ( cioè MOUNTING ) e al PRIMO caricamento del presente COMPONENT (Main.jsx).
+    Si utilizza questo metodo per caricare risorse e mostrarle subito in pagina invece di fare un FETCH (ad esempio) per riempire il Feed. */
     useEffect(() => {
         fetchPosts();
-        console.log('FETCH of initial resources (Posts) executed.');
     }, []);
+
+    useEffect(() => {
+        console.log('FETCHED resources: (' + Feed.length + ')');
+    }, [fetchPosts]);
+
+    // INIT USE-STATE SETTING
+    const [Feed, setFeed] = useState([]);
 
 
     // Invece di tanti USE-STATE per ciascun field, uso un solo USE-STATE del FORM al cui interno specifico le KEYS
@@ -40,9 +50,8 @@ function Main() {
         tags: [],
     })
 
-    const [Feed, setFeed] = useState(Posts);
 
-
+    // # HANDLE FORM FIELDS CHANGE
     const handleFormFieldsChange = (e) => {
         // Se il valore è TEXT o CHECKBOX rendo due risultati diversi tramite TERNARY-OPERATOR
         const receivedValue = (e.target.type === 'checkbox' ? e.target.checked : e.target.value);
@@ -58,6 +67,8 @@ function Main() {
         console.log(e.target.checked)
     }
 
+
+    // # HANDLE FORM SUBMIT
     const handleFormSubmit = (e) => {
         // Evito che il Submit ricarichi la pagina tramite "e" (EVENT), che è un OBJECT automaticamente fornito contenente tutte le info dell'evento lanciato
         e.preventDefault();
@@ -89,6 +100,8 @@ function Main() {
         // alert('Creation successful')
     }
 
+
+    // # CRUD - MODIFY
     const modifyTitle = async (modifyId) => {
 
         alert('Modify element with ID: ' + modifyId)
@@ -99,7 +112,7 @@ function Main() {
         // setFeed(updatedFeed);
 
         // Modifica tramite CRUD ( MODIFY ) come sarebbe se si lavorasse con una vera API
-        // await fetch(apiUrlRoot + 'posts/' + modifyId, {
+        // await fetch('http://localhost:3000/posts/' + modifyId, {
         //     method: 'PATCH',
         // })
         //     .then(res => res.json())
@@ -107,39 +120,38 @@ function Main() {
         //         setFeed(data.elements);
         //     })
         //     .catch((error) => {
-        //         console.log('error catched')
+        //         console.log('Error while fetching content')
         //     })
 
         // console.log(data.elements);
     }
 
-    const deletePost = async (deleteId) => {
+
+    // # CRUD - DESTROY
+    const deletePost = (deleteId) => {
 
         alert('ID selezionato: ' + deleteId);
         // Destroy "simulata" filtrando l'Array iniziale fornito in Locale
         // setFeed(Feed.filter((post, index) => post.id !== deleteId));
 
-        let updatedFeed;
-
         // Cancellazione tramite CRUD ( DESTROY ) come sarebbe se si lavorasse con una vera API
-        const fetchPostsAfterDelete = async () => {
+        const fetchFeedAfterDelete = async () => {
             await fetch(apiUrlRoot + 'posts/' + deleteId, {
                 method: 'DELETE',
+                headers: { "Content-Type": "application/json" },
             })
-                .then(res => res.json())
+                .then(res => res)
                 .then((data) => {
-                    updatedFeed = data.elements;
+                    console.log('DESTROY of item executed. (Item with ID: ' + deleteId + ')');
+                    fetchPosts();
+                    console.log('FETCH of updated Feed executed.');
                 })
                 .catch((error) => {
-                    console.log('error catched')
-                })
-        }
+                    console.log('Error while fetching content')
+                });
+        };
 
-        await fetchPostsAfterDelete();
-
-        await setFeed(updatedFeed);
-
-        console.log(updatedFeed);
+        fetchFeedAfterDelete();
     }
 
 
