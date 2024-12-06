@@ -44,7 +44,7 @@ function Main() {
             .then(res => res.json())
             .then((data) => {
                 setFeed(data.elements);
-                console.log('CRUD executed: Index');
+                console.log('CRUD executed: Index at ' + apiUrlRoot + apiSubPath);
             })
             .catch((error) => {
                 console.log('Error while fetching content')
@@ -53,15 +53,15 @@ function Main() {
 
     // # CRUD - STORE
     const crudStore = () => (
-        fetch(apiUrlRoot + apiSubPath, {
-            method: 'POST',
+        fetch((apiUrlRoot + apiSubPath), {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formFields),
         })
             .then(res => res.json())
             .then((data) => {
-                setFeed(data.elements);
-                console.log('CRUD executed: Store');
+                crudIndex();
+                console.log('CRUD executed: "Store" at ' + apiUrlRoot + apiSubPath);
             })
             .catch((error) => {
                 console.log('Error while fetching content')
@@ -88,14 +88,14 @@ function Main() {
 
     // # CRUD - DESTROY
     const crudDestroy = (deleteId) => {
-        fetch(apiUrlRoot + 'posts/' + deleteId, {
+        fetch(apiUrlRoot + apiSubPath + deleteId, {
             method: 'DELETE',
         })
             .then(res => res.json())
             .then((data) => {
                 console.log('DESTROY of item executed. (Item with ID: ' + deleteId + ')');
                 crudIndex();
-                console.log('CRUD executed: Destroy');
+                console.log('CRUD executed: Destroy at ' + apiUrlRoot + apiSubPath + deleteId);
             })
             .catch((error) => {
                 console.log('Error while fetching content')
@@ -123,8 +123,6 @@ function Main() {
             // Modifico solo la KEY con il nome dell'INPUT, che deve coincidere con quello delle KEYS del FORM assegnate nello USE-STATE dinamico
             [e.target.name]: receivedValue,
         });
-
-        console.log(formFields);
     }
 
     // # HANDLER - FORM SUBMIT - INSERT
@@ -212,11 +210,6 @@ function Main() {
         // CRUD ( DESTROY ) con API
         crudDestroy(deleteId);
     }
-
-
-
-
-
 
 
 
